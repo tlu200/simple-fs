@@ -1,0 +1,24 @@
+# cmdtest9.txt
+# Level 9 functionality test: test to make sure that the system
+#  handles multiple appends to files
+format
+ls
+import Disk.java
+ls
+cp Disk.java a
+cp Disk.java b
+ls
+append Disk.java a
+lscm
+cp Disk.java c
+append Disk.java a
+ls
+cp Disk.java d
+append Disk.java a
+ls
+cp Disk.java e
+append Disk.java a
+ls
+export a cmdtest9.out
+q
+

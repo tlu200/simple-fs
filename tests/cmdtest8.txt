@@ -1,0 +1,8 @@
+# cmdtest8.txt
+# Level 8 functionality test: test to make sure that the system
+#  handles files that are too large
+format
+ls
+import Disk0
+ls
+q

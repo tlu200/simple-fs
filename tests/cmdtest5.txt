@@ -1,0 +1,24 @@
+# cmdtest5.txt
+# Level 5 functionality test: file/directory deletions
+format
+ls
+mkdir foo
+mkdir foo/baz
+import Disk.java foo/baz/biz
+echo should generate an error
+rmdir foo/baz
+echo should generate an error II
+rmdir foo
+echo should generate an error III
+rm foo
+echo copying
+cp foo/baz/biz foo/Disk.java
+echo should not generate an error
+rm foo/baz/biz
+echo should not generate an error II
+rmdir foo/baz
+rm foo/Disk.java
+rmdir foo
+echo should now show an empty file system
+b
+q

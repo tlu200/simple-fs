@@ -1,0 +1,19 @@
+# cmdtest7.txt
+# Level 7 functionality test: moving files/directories (harder case)
+format
+ls
+mkdir foo
+mkdir foo/baz
+import Disk.java foo/baz/biz
+mkdir bar
+mv foo/baz/biz bar/
+mv bar foo/baz
+ls foo
+ls foo/baz
+ls foo/baz/bar
+echo generate an error
+mv /foo foo/
+echo generate an error II
+mv /foo foo/baz
+ls
+q
