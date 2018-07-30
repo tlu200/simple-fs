@@ -2,7 +2,17 @@ class FileSystem extends FileSystemAbstract {
 
   @Override
   public void list(String name) throws FileSystemException {
-
+    try {
+      checkDirectoryName(name); // check if name is valid
+      if (existsFile(name)) {
+        System.out.println("trying to list file with name: " + name);
+      } else {
+        System.out.println("file not found");
+      }
+      existsDirectory(name);
+    } catch(FileSystemException e) {
+      System.out.println(e);
+    }
   }
 
   @Override
