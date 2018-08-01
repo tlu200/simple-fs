@@ -2,18 +2,15 @@
 
 To generate the class files:
 ```
-javac -d bin src/*.java
+mvn package
 ```
 
 Then run it:
 ```
-java -cp ./bin UserInterface < ./tests/cmdtest1.txt
-java -cp ./bin UserInterface < ./tests/cmdtest2.txt
-java -cp ./bin UserInterface < ./tests/cmdtest3.txt
-java -cp ./bin UserInterface < ./tests/cmdtest4.txt
-java -cp ./bin UserInterface < ./tests/cmdtest5.txt
-java -cp ./bin UserInterface < ./tests/cmdtest6.txt
-java -cp ./bin UserInterface < ./tests/cmdtest7.txt
-java -cp ./bin UserInterface < ./tests/cmdtest8.txt
-java -cp ./bin UserInterface < ./tests/cmdtest9.txt
+java -jar target/simple-fs-1.0-SNAPSHOT.jar
+```
+
+Format the Disk when you run it the first time
+```
+> format
 ```

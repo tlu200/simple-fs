@@ -1,11 +1,6 @@
 class FileSystem extends FileSystemAbstract {
   public FileSystem() {
     db = new DirectoryBlock(disk);
-    try {
-      db.read(1);
-    } catch (FileSystemException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
