@@ -26,26 +26,15 @@ class FileSystem extends FileSystemAbstract {
 
   @Override
   public void createDir(String name) throws FileSystemException {
-    String arr[] = name.split("/");
-    db.read(1);
-    if (arr.length > 1) {
-      for (int i = 0; i < arr.length - 1; i++) {
-        int index = db.findName(arr[i]);
-        if (index == -1 || !db.inodes[index].used_p || db.inodes[index].file_p) {
-          throw new FileSystemException("The parent directory does not exist");
-        }
-        db.read(db.inodes[index].blockPtr[0]);
-      }
-      name = arr[arr.length - 1];
-    }
+    String entryName = goToParentDirectory(name);
 
-    if (db.findName(name) != -1) {
+    if (db.findName(entryName) != -1) {
       throw new FileSystemException("Entry already exist");
     }
 
-    checkDirectoryName(name);
+    checkDirectoryName(entryName);
 
-    int index = db.AllocFree(name, false);
+    int index = db.AllocFree(entryName, false);
     free_block.AllocBlocks(db.inodes[index].blockPtr, 0, 1);
 
     DirectoryBlock dir = new DirectoryBlock(disk);
@@ -61,7 +50,21 @@ class FileSystem extends FileSystemAbstract {
 
   @Override
   public void create(String name) throws FileSystemException {
+    checkDirectoryName(name);
+    if(existsDirectory(name)) {
+      // original was a directory
+      throw new FileSystemException(name + " is a directory.");
+    }
 
+    String entryName = goToParentDirectory(name);
+
+    int index = db.findName(entryName);
+    if (index != -1) {
+      db.inodes[index].size = 0;
+    } else {
+      db.AllocFree(entryName, true);
+    }
+    db.write(db.block_num);
   }
 
   @Override
@@ -81,7 +84,9 @@ class FileSystem extends FileSystemAbstract {
 
   @Override
   public boolean existsFile(String name) throws FileSystemException {
-    return false;
+    String entryName = goToParentDirectory(name);
+    int index = db.findName(entryName);
+    return index != -1 && db.inodes[index].file_p;
   }
 
   @Override
@@ -94,7 +99,7 @@ class FileSystem extends FileSystemAbstract {
     if (arr.length > 1) {
       for (int i = 0; i < arr.length - 1; i++) {
         int index = db.findName(arr[i]);
-        if (index == -1 || !db.inodes[index].used_p || db.inodes[index].file_p) {
+        if (index == -1 || db.inodes[index].file_p) {
           return false;
         }
         db.read(db.inodes[index].blockPtr[0]);
@@ -102,7 +107,7 @@ class FileSystem extends FileSystemAbstract {
       name = arr[arr.length - 1];
     }
     int index = db.findName(name);
-    return !(index == -1 || !db.inodes[index].used_p || db.inodes[index].file_p);
+    return !(index == -1 || db.inodes[index].file_p);
   }
 
   @Override
@@ -123,5 +128,21 @@ class FileSystem extends FileSystemAbstract {
   @Override
   public void fileAppend(String fname1, String fname2) throws FileSystemException {
 
+  }
+
+  private String goToParentDirectory(String name) throws FileSystemException {
+    String arr[] = name.split("/");
+    db.read(1);
+    if (arr.length > 1) {
+      for (int i = 0; i < arr.length - 1; i++) {
+        int index = db.findName(arr[i]);
+        if (index == -1 || db.inodes[index].file_p) {
+          throw new FileSystemException("The parent directory does not exist");
+        }
+        db.read(db.inodes[index].blockPtr[0]);
+      }
+      name = arr[arr.length - 1];
+    }
+    return name;
   }
 }
