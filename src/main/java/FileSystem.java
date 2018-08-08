@@ -45,7 +45,23 @@ class FileSystem extends FileSystemAbstract {
 
   @Override
   public void deleteDir(String name) throws FileSystemException {
-
+    Boolean exist = this.existsDirectory(name);
+    if (!exist) {
+      throw new FileSystemException("Directory not exists.");
+    }
+    String entryName = goToParentDirectory(name);
+    int index = db.findName(entryName);
+    db.read(db.inodes[index].blockPtr[0]);
+    for(int i = 0; i < DirectoryBlock.maxFiles; ++i) {
+      if(db.inodes[i].used_p) {
+        throw new FileSystemException("The directory is not empty");
+      };
+    };
+    entryName = goToParentDirectory(name);
+    index = db.findName(entryName);
+    free_block.DeallocBlocks(db.inodes[index].blockPtr, 1);
+    db.DeallocEntry(index);
+    db.write(db.block_num);
   }
 
   @Override
