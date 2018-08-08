@@ -69,11 +69,14 @@ class FileSystem extends FileSystemAbstract {
 
   @Override
   public void delete(String name) throws FileSystemException {
-    int index = db.findName(name);
-    if ( index == -1) {
+    Boolean exist = this.existsFile(name);
+    if (!exist) {
       throw new FileSystemException("File not exists.");
     }
+    String entryName = goToParentDirectory(name);
+    int index = db.findName(entryName);
     db.DeallocEntry(index);
+    db.write(db.block_num);
   }
 
   @Override
