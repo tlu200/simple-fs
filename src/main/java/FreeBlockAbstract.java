@@ -59,7 +59,7 @@ abstract class FreeBlockAbstract extends Block {
       disk.fp.write(buffer);
     }catch(IOException e){
       // Translate the exception
-      throw new FileSystemException("FreeBlock::read(): " + e);
+      throw new FileSystemException("FreeBlock::write(): " + e);
     };
   };
 
